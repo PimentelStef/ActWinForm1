@@ -5,18 +5,6 @@ namespace ActWinForm1
         public Form1()
         {
             InitializeComponent();
-
-            // Initial state
-            btnAddTask.Enabled = false;
-            btnRemoveSelected.Enabled = false;
-            chkConfirmDelete.Checked = false;
-
-            // Event subscriptions
-            txtTask.TextChanged += TxtTask_TextChanged;
-            lstTasks.SelectedIndexChanged += LstTasks_SelectedIndexChanged;
-            btnAddTask.Click += BtnAddTask_Click;
-            btnRemoveSelected.Click += BtnRemoveSelected_Click;
-            btnClearAll.Click += BtnClearAll_Click;
         }
 
         private void BtnAddTask_Click(object sender, EventArgs e)
@@ -25,15 +13,21 @@ namespace ActWinForm1
 
             if (string.IsNullOrEmpty(taskText))
             {
-                MessageBox.Show("You must enter a task first.", "No Task Entered", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                lblStatus.Text = "No task entered";
+                MessageBox.Show("You must enter a task first", "No Task Entered", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                lblStatus.Text = "No task entered!";
+                return;
+            }
+
+            if (lstTasks.Items.Contains(taskText))
+            {
+                MessageBox.Show("This task already exists!", "Duplicate Task", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                lblStatus.Text = "Duplicated task found — not added.";
                 return;
             }
 
             lstTasks.Items.Add(taskText);
 
             txtTask.Clear();
-            btnAddTask.Enabled = false;
 
             lblStatus.Text = $"Task added at {DateTime.Now.ToShortTimeString()}";
         }
@@ -42,7 +36,7 @@ namespace ActWinForm1
         {
             if (lstTasks.SelectedIndex == -1)
             {
-                lblStatus.Text = "No task selected.";
+                lblStatus.Text = "No task selected to remove";
                 return;
             }
 
@@ -60,7 +54,7 @@ namespace ActWinForm1
                 removeConfirmed = (confirm == DialogResult.Yes);
                 if (!removeConfirmed)
                 {
-                    lblStatus.Text = "Deletion canceled.";
+                    lblStatus.Text = "Deletion canceled";
                     return;
                 }
             }
@@ -79,7 +73,7 @@ namespace ActWinForm1
             }
 
             lstTasks.Items.Clear();
-            lblStatus.Text = "All tasks cleared";
+            lblStatus.Text = "All tasks cleared!";
         }
 
         private void TxtTask_TextChanged(object sender, EventArgs e)
